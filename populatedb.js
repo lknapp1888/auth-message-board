@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 
+const bcrypt = require('bcryptjs')
+
 console.log(
     'This script populates some test users and posts. Specified database as argument - e.g.: node populatedb "mongodb+srv://cooluser:coolpassword@cluster0.lz91hw2.mongodb.net/local_library?retryWrites=true&w=majority"'
   );
@@ -39,26 +41,35 @@ console.log(
     firstName,
     lastName,
     email,
+    password,
     clubMember,
     admin
   ) {
-    const user = new User({
-        firstName,
-        lastName,
-        email,
-        clubMember,
-        admin
-    })
-    await user.save();
-    users[index] = user;
-    console.log(`added user: ${user.fullName}`)
+    bcrypt.hash(password, 10, async (err, hashedPassword) => {
+      try {
+        const user = new User({
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword,
+          clubMember,
+          admin
+      })
+      await user.save();
+      users[index] = user;
+      console.log(`added user: ${user.fullName}`)
+      } catch (error) {
+        console.log('bcrypt failed')
+      }
+    });
+
   }
   
   async function createUsers() {
     console.log("Adding users");
     await Promise.all([
-      userCreate(0, 'Lewis', 'K', 'lewis@email.com', true, true),
-      userCreate(1, 'Kolo', 'Toure', 'kolo@email.com', true, true),
+      userCreate(0, 'Lewis', 'K', 'lewis@email.com', 'passwordencrypted', true, true),
+      userCreate(1, 'Kolo', 'Toure', 'kolo@email.com', 'passwordencrypted', true, true),
   ]);
   }
   
@@ -77,10 +88,14 @@ console.log(
   }
   
   async function createMessages() {
-      console.log("Adding messages");
+    const [userOne, userTwo] = await Promise.all([
+      User.findOne({firstName: 'Lewis'}).exec(),
+      User.findOne({firstName: 'Kolo'}).exec(),
+    ])
+      console.log('Adding messages:');
       await Promise.all([
-            messageCreate(0, 'Hello application', users[0]),
-            messageCreate(1, 'Hello again', users[0]),
-            messageCreate(2, 'final message test', users[1])
+            messageCreate(0, 'Hello application', userOne),
+            messageCreate(1, 'Hello again', userOne),
+            messageCreate(2, 'final message test', userTwo)
       ])
-  }
+  };

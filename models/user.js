@@ -6,6 +6,7 @@ const UserSchema = new Schema({
     firstName: {type: String, required: true, maxLength: 30, minLength: 1},
     lastName: {type: String, required: true, maxLength: 30, minLength: 1},
     email: {type: String, required: true},
+    password: {type: String, required: true, maxLength: 100, minLength: 1},
     registered: {type: Date, default: () => Date.now(), immutable: true},
     clubMember: {type: Boolean, default: false},
     admin: {type: Boolean, default: false}
