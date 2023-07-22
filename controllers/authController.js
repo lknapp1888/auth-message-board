@@ -2,7 +2,9 @@ const asyncHandler = require("express-async-handler");
 
 //display sign up form on GET
 exports.signup_get = asyncHandler(async (req, res, next) => {
-  res.send('Sign-up GET page - Not implemented');
+  res.render('signup_form', {
+    title: 'Register an account',
+  });
 });
 
 //handle sign up post request
