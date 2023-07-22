@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const connection = require('../config/database');
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
@@ -9,4 +10,4 @@ const MessageSchema = new Schema({
 });
 
 // Export model
-module.exports = mongoose.model("Message", MessageSchema);
+module.exports = connection.model("Message", MessageSchema);

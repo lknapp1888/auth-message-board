@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const connection = require('../config/database');
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
@@ -19,4 +20,4 @@ UserSchema.virtual("fullName").get(function () {
   });
 
 // Export model
-module.exports = mongoose.model("User", UserSchema);
+module.exports = connection.model("User", UserSchema);

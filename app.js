@@ -3,24 +3,34 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const session = require("express-session");
+const passport = require("passport");
+
+const connection = require('./config/database');
 
 const indexRouter = require('./routes/index');
 
+// Package documentation - https://www.npmjs.com/package/connect-mongo
+const MongoStore = require('connect-mongo');
+
 const app = express();
 
-// Set up mongoose connection
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-const mongoDB = process.env.mongoURL;
-
-main().catch((err) => console.log(err));
-async function main() {
-  await mongoose.connect(mongoDB);
-}
+const sessionStore = MongoStore.create({mongoUrl: process.env.mongoURL, collection: 'sessions'})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+//passport set up
+app.use(session({
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: true,
+  store: sessionStore,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(logger('dev'));
 app.use(express.json());
