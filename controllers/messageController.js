@@ -1,21 +1,34 @@
 const asyncHandler = require("express-async-handler");
 const Message = require("../models/message");
-
+const User = require("../models/user");
+const { body, validationResult } = require("express-validator");
 
 //display list of messages
 exports.get_message_list = asyncHandler(async (req, res, next) => {
-      const messages = await Message.find().populate('author').exec();
-      res.render('message_list', {
-            title: 'Home page',
-            user: req.user,
-            message_list: messages,
-      })
-})
+  const messages = await Message.find().sort({ added: -1 }).populate("author").exec();
+  res.render("message_list", {
+    title: "Home page",
+    user: req.user,
+    message_list: messages,
+  });
+});
 
-exports.new_message_get = asyncHandler(async (req, res, next) => {
-      res.send('GET request for new message page - not implemented');
-})
+exports.new_message_post = [
+      body('messageText').trim()
+      .isLength({ min: 1, max:150 })
+      .escape(),
 
-exports.new_message_post = asyncHandler(async (req, res, next) => {
-      res.send('POST request for new message page - not implemented');
-})
+      asyncHandler(async (req, res, next) => {
+            try {
+              const user = await User.findById(req.params.id).exec();
+              const message = new Message({
+                text: req.body.messageText,
+                author: user,
+              });
+              await message.save();
+              res.redirect('/')
+            } catch (error) {
+                next(error)
+            }
+          })
+]

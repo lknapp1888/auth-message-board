@@ -7,14 +7,15 @@ block content
     form(method='POST' action='/log-out')
       button.btn.btn-primary(type='submit') Log out
 
+    if user.clubMember 
+      p You are a club member. This enables you to see post author and post date
+
     if !user.clubMember
       form(method='POST' action='/join-club')
        label(for='userid') Not a member: 
        input#userid.form-control(type='hidden',name='userid', required='true', value=user._id )
        button.btn.btn-primary(type='submit') Join club
     
-    if user.clubMember 
-      p You are a club member. This enables you to see post author and post date
 
 
   if !user
@@ -25,7 +26,13 @@ block content
             button.btn.btn-primary(type='submit') sign-up
 
   h2 Messages: 
-  
+
+  if user
+    form(method='POST' action=`/new-message/${user._id}`)
+      div.message-form
+        label(for='messageText') Message text:
+        input#messageText(type='text', placeholder='Enter the text of your message' name='messageText' required='true', maxLength=150, minLength=1)
+        button.btn.btn-primary(type='submit') Submit
   ul
     each message in message_list
       div.posted-comment
