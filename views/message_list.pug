@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title
+
+  if user
+    form(method='POST' action='/log-out')
+      button.btn.btn-primary(type='submit') Log out
+
+  if !user
+    div#authContainer
+        form(method='GET' action='/log-in')
+            button.btn.btn-primary(type='submit') Log in
+        form(method='GET' action='/sign-up')
+            button.btn.btn-primary(type='submit') sign-up

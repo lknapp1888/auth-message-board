@@ -3,7 +3,7 @@ const { body, validationResult } = require("express-validator");
 const User = require("../models/user");
 const passport = require('passport');
 
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
 
 //display sign up form on GET
 exports.signup_get = asyncHandler(async (req, res, next) => {
@@ -45,7 +45,6 @@ exports.signup_post = [
   body('passwordVerify', 'passwords do not match').custom((value, { req }) => {
     return value === req.body.password;
   }),
-  //check if user already exists - perhaps do above?
 
   //process request after validation and sanitation -THIS WORKS!
   asyncHandler(async (req, res, next) => {
@@ -86,13 +85,37 @@ exports.signup_post = [
 
 //display log in form on GET
 exports.login_get = asyncHandler(async (req, res, next) => {
-  res.send("log-in GET page - Not implemented");
+  res.render('login_form', {
+    title: req.session.messages[req.session.messages.length - 1]
+  })
 });
 
 //handle log in post request
-exports.login_post = asyncHandler(async (req, res, next) => {
-  res.send("log-in POST page - Not implemented");
-});
+exports.login_post = [
+  body('username').trim()
+  .isEmail()
+  .withMessage('please enter a valid email address')
+  .escape(),
+  body('password').trim()
+  .escape(),
+  passport.authenticate('local', {failureRedirect: '/log-in', failureMessage: 'Log in failed, please try again', successRedirect: '/'}),
+  // asyncHandler(async (req, res, next) => {
+  //   if (req.user) {
+  //     res.redirect('/')
+  //   } else {
+  //     res.render('login_form', {
+  //       title: 'log in failed, please try again',
+  //     })
+  //   }
+  // }),
+]
+
+exports.logout_post = asyncHandler(async(req, res, next) => {
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+})
 
 //display join club form on GET
 exports.join_club_get = asyncHandler(async (req, res, next) => {

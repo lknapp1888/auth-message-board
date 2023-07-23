@@ -15,3 +15,10 @@ form button {
   width: min-content;
   gap: 10px;
 }
+
+#authContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min-content;
+}
