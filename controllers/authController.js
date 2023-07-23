@@ -85,8 +85,9 @@ exports.signup_post = [
 
 //display log in form on GET
 exports.login_get = asyncHandler(async (req, res, next) => {
+  const title = req.session.messages ? req.session.messages[req.session.messages.length - 1] : 'log in';
   res.render('login_form', {
-    title: req.session.messages[req.session.messages.length - 1]
+    title: title,
   })
 });
 
@@ -99,15 +100,6 @@ exports.login_post = [
   body('password').trim()
   .escape(),
   passport.authenticate('local', {failureRedirect: '/log-in', failureMessage: 'Log in failed, please try again', successRedirect: '/'}),
-  // asyncHandler(async (req, res, next) => {
-  //   if (req.user) {
-  //     res.redirect('/')
-  //   } else {
-  //     res.render('login_form', {
-  //       title: 'log in failed, please try again',
-  //     })
-  //   }
-  // }),
 ]
 
 exports.logout_post = asyncHandler(async(req, res, next) => {
@@ -117,12 +109,12 @@ exports.logout_post = asyncHandler(async(req, res, next) => {
   });
 })
 
-//display join club form on GET
-exports.join_club_get = asyncHandler(async (req, res, next) => {
-  res.send("join club GET page - Not implemented");
-});
-
 //handle join club post request
 exports.join_club_post = asyncHandler(async (req, res, next) => {
-  res.send("join club POST page - Not implemented");
+  try {
+    await User.findByIdAndUpdate(req.body.userid, {clubMember: true}, {})
+    res.redirect('/')
+  } catch (error) {
+    next(error)
+  }
 });

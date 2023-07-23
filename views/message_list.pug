@@ -7,9 +7,35 @@ block content
     form(method='POST' action='/log-out')
       button.btn.btn-primary(type='submit') Log out
 
+    if !user.clubMember
+      form(method='POST' action='/join-club')
+       label(for='userid') Not a member: 
+       input#userid.form-control(type='hidden',name='userid', required='true', value=user._id )
+       button.btn.btn-primary(type='submit') Join club
+    
+    if user.clubMember 
+      p You are a club member. This enables you to see post author and post date
+
+
   if !user
     div#authContainer
         form(method='GET' action='/log-in')
             button.btn.btn-primary(type='submit') Log in
         form(method='GET' action='/sign-up')
             button.btn.btn-primary(type='submit') sign-up
+
+  h2 Messages: 
+  
+  ul
+    each message in message_list
+      div.posted-comment
+        div.comment-text #{message.text}
+        if user
+            div.comment-author #{user.clubMember ? message.author.fullName : 'join club to see author'}
+            div.comment-date #{user.clubMember ? message.timeSincePosted : 'join club to see post date'}
+        else
+          div.comment-author #{'log in and join club to see post date'}
+          div.comment-date #{'log in and join club to see author'}
+
+    else
+      p There are no messages.

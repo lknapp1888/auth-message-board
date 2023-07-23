@@ -1,10 +1,14 @@
 const asyncHandler = require("express-async-handler");
+const Message = require("../models/message");
+
 
 //display list of messages
 exports.get_message_list = asyncHandler(async (req, res, next) => {
+      const messages = await Message.find().populate('author').exec();
       res.render('message_list', {
             title: 'Home page',
             user: req.user,
+            message_list: messages,
       })
 })
 

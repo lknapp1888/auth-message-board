@@ -18,9 +18,7 @@ router.post('/log-in', auth_controller.login_post);
 
 router.post('/log-out', auth_controller.logout_post);
 
-router.get('/join-club', auth_controller.join_club_get);
-
-router.post('/join-club', auth_controller.join_club_get);
+router.post('/join-club', auth_controller.join_club_post);
 
 router.get('/new-message', message_controller.new_message_get);
 
