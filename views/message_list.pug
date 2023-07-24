@@ -43,6 +43,9 @@ block content
         else
           div.comment-author #{'log in and join club to see post date'}
           div.comment-date #{'log in and join club to see author'}
-
+        if user.admin
+          form(method='POST' action='/delete-message')
+            input#messageid.form-control(type='hidden',name='messageid', required='true', value=message._id )
+            button.btn.btn-primary(type='submit') Delete
     else
       p There are no messages.
