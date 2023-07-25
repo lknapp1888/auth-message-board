@@ -20,7 +20,7 @@ exports.new_message_post = [
 
       asyncHandler(async (req, res, next) => {
             try {
-              const user = await User.findById(req.params.id).exec();
+              const user = await User.findById(req.body.newMessageid).exec();
               const message = new Message({
                 text: req.body.messageText,
                 author: user,

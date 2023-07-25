@@ -20,8 +20,8 @@ router.post('/log-out', auth_controller.logout_post);
 
 router.post('/join-club', auth_controller.join_club_post);
 
-router.post('/new-message/:id', message_controller.new_message_post);
+router.post('/message', message_controller.new_message_post);
 
-router.post('/delete-message', message_controller.delete_message)
+router.post('/message-delete', message_controller.delete_message)
 
 module.exports = router;

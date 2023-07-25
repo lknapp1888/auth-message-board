@@ -28,10 +28,11 @@ block content
   h2 Messages: 
 
   if user
-    form(method='POST' action=`/new-message/${user._id}`)
+    form(method='POST' action=`/message`)
       div.message-form
         label(for='messageText') Message text:
         input#messageText(type='text', placeholder='Enter the text of your message' name='messageText' required='true', maxLength=150, minLength=1)
+        input#newMessageid.form-control(type='hidden',name='newMessageid', required='true', value=user._id )
         button.btn.btn-primary(type='submit') Submit
   ul
     each message in message_list
@@ -43,8 +44,8 @@ block content
         else
           div.comment-author #{'log in and join club to see post date'}
           div.comment-date #{'log in and join club to see author'}
-        if user.admin
-          form(method='POST' action='/delete-message')
+        if user && user.admin
+          form(method='POST' action='/message-delete')
             input#messageid.form-control(type='hidden',name='messageid', required='true', value=message._id )
             button.btn.btn-primary(type='submit') Delete
     else
